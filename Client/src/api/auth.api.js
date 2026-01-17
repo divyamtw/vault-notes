@@ -1,6 +1,6 @@
 import { api } from "./api.js";
 
-export const registerUser = async (firstName, lastName, email, password) => {
+const registerUser = async (firstName, lastName, email, password) => {
   try {
     const response = await api.post("/api/v1/auth/register", {
       firstName,
@@ -17,7 +17,7 @@ export const registerUser = async (firstName, lastName, email, password) => {
   }
 };
 
-export const loginUser = async (email, password) => {
+const loginUser = async (email, password) => {
   try {
     const response = await api.post("/api/v1/auth/login", {
       email,
@@ -32,7 +32,7 @@ export const loginUser = async (email, password) => {
   }
 };
 
-export const logoutUser = async () => {
+const logoutUser = async () => {
   try {
     const response = await api.post("/api/v1/auth/logout");
     return response.data;
@@ -44,7 +44,7 @@ export const logoutUser = async () => {
   }
 };
 
-export const getUserProfile = async () => {
+const getUserProfile = async () => {
   try {
     const response = await api.get("/api/v1/auth/profile");
     return response.data;
@@ -55,3 +55,5 @@ export const getUserProfile = async () => {
     );
   }
 };
+
+export { registerUser, loginUser, logoutUser, getUserProfile };
