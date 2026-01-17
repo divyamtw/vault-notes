@@ -1,8 +1,8 @@
 import { Schema, model } from "mongoose";
 
-const noteSchema = Schema.create(
+const noteSchema = new Schema(
   {
-    Owner: {
+    owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -11,7 +11,7 @@ const noteSchema = Schema.create(
     title: {
       type: String,
       trim: true,
-      default: "untitled",
+      default: "Untitled",
     },
     content: {
       type: String,
