@@ -1,13 +1,36 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { setAxiosAccessToken } from "../api/api.js";
-import { logoutUser } from "../api/auth.service.js";
+import { logoutUser, refreshLogin, getUserProfile } from "../api/auth.service.js";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const res = await refreshLogin();
+        if (res?.accessToken) {
+          setAccessToken(res.accessToken);
+          // refreshLogin already calls setAxiosAccessToken, but to be sure:
+          setAxiosAccessToken(res.accessToken);
+          const profileRes = await getUserProfile();
+          setUser(profileRes.user);
+        }
+      } catch (error) {
+        // Valid case if user is not logged in / refreshToken is missing or expired
+        setAccessToken(null);
+        setAxiosAccessToken(null);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    initAuth();
+  }, []);
 
   const login = (token, userData) => {
     setAccessToken(token);

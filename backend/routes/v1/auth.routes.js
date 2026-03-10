@@ -3,6 +3,7 @@ import {
   loginUser,
   logoutUser,
   userProfile,
+  refreshAccessToken,
 } from "../../controller/user.controller.js";
 import express from "express";
 import verifyAccessToken from "../../middleware/auth.middleware.js";
@@ -13,5 +14,6 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
 router.get("/profile", verifyAccessToken, userProfile);
+router.post("/refresh-token", refreshAccessToken);
 
 export default router;

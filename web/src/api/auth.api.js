@@ -12,7 +12,7 @@ const registerUser = async (firstName, lastName, email, password) => {
   } catch (error) {
     throw new Error(
       error.response?.data?.message ||
-        "Something went wrong while registering user"
+        "Something went wrong while registering user",
     );
   }
 };
@@ -27,7 +27,7 @@ const loginUser = async (email, password) => {
   } catch (error) {
     throw new Error(
       error.response?.data?.message ||
-        "Something went wrong while logging in user"
+        "Something went wrong while logging in user",
     );
   }
 };
@@ -39,7 +39,7 @@ const logoutUser = async () => {
   } catch (error) {
     throw new Error(
       error.response?.data?.message ||
-        "Something went wrong while logging out user"
+        "Something went wrong while logging out user",
     );
   }
 };
@@ -51,9 +51,21 @@ const getUserProfile = async () => {
   } catch (error) {
     throw new Error(
       error.response?.data?.message ||
-        "Something went wrong while getting user profile"
+        "Something went wrong while getting user profile",
     );
   }
 };
 
-export { registerUser, loginUser, logoutUser, getUserProfile };
+const refreshAccessToken = async () => {
+  try {
+    const response = await api.post("/api/v1/auth/refresh-token");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+        "Something went wrong while refreshing access token",
+    );
+  }
+};
+
+export { registerUser, loginUser, logoutUser, getUserProfile, refreshAccessToken };

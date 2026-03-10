@@ -1,5 +1,6 @@
 import { User } from "../model/user.model.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.js";
+import jwt from "jsonwebtoken";
 
 const registerUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
@@ -130,10 +131,45 @@ const logoutUser = async (req, res) => {
   }
 };
 
+const refreshAccessToken = async (req, res) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token missing" });
+    }
+
+    const decodedToken = jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    const user = await User.findById(decodedToken.userId);
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    if (user.refreshToken !== refreshToken) {
+      return res.status(401).json({ message: "Refresh token is expired or used" })
+    }
+
+    const newAccessToken = generateAccessToken(user._id);
+
+    return res.status(200).json({
+      accessToken: newAccessToken,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Could not refresh token",
+    });
+  }
+};
+
 const userProfile = async (req, res) => {
   return res.status(200).json({
     user: req.user,
   });
 };
 
-export { registerUser, loginUser, logoutUser, userProfile };
+export { registerUser, loginUser, logoutUser, userProfile, refreshAccessToken };
