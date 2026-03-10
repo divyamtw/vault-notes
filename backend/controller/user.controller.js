@@ -6,7 +6,7 @@ const registerUser = async (req, res) => {
 
   if (
     [firstName, lastName, email, password].some(
-      (field) => !field || field.trim() === ""
+      (field) => !field || field.trim() === "",
     )
   ) {
     return res.status(400).json({ message: "All fields are required" });
@@ -50,7 +50,7 @@ const loginUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ email: normalizedEmail }).select(
-      "+password"
+      "+password",
     );
     if (!user) {
       return res.status(401).json({ message: "Invalid user credentials!" });
@@ -118,8 +118,8 @@ const logoutUser = async (req, res) => {
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "none",
     });
     return res.status(200).json({ message: "user logged out!" });
   } catch (error) {
